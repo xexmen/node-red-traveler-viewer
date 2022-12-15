@@ -100,8 +100,10 @@ module.exports = function (RED) {
 				<g ng-if="${config.differential == true}">
 				<text id="ag_alt_{{unique}}" class="ag-txt-{{unique}} small" x="${config.stripe.left}" y="${config.stripe.y + config.stripe.sdy}"
 					text-anchor="end" dominant-baseline="baseline">
-					<tspan x="${config.stripe.left}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>					
+					<tspan x="${config.stripe.left}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>
+					<tspan x="${config.center.point/2 - 8}" id="ag_alt_0.5_{{unique}}" text-anchor="start">-5</tspan>		
 					<tspan x="${config.center.point + 1.5}" id="ag_alt_1_{{unique}}" text-anchor="middle"></tspan>
+					<tspan x="${config.center.point*1.5 - 10}" id="ag_alt_1.5_{{unique}}" text-anchor="start">+5</tspan>
 					<tspan x="${config.exactwidth - 3}" id="ag_alt_2_{{unique}}" text-anchor="end"></tspan>					
 				</text>
 				</g>
@@ -119,11 +121,31 @@ module.exports = function (RED) {
 					style="stroke:none";
 					fill="${config.bgrColor}"					
 				/>
-				<rect id="ag_str_mark_{{unique}}" ng-if="${config.differential == true}"  x="${initpos}" y="${config.stripe.y - 7}" 
-					width="1" height="7"	
+				<rect id="ag_str_mark_min_{{unique}}" ng-if="${config.differential == true}"  x="${config.stripe.left}" y="${config.stripe.y - config.lineWidth/2}" 
+					width="1" height="${config.lineWidth}"	
+					style="stroke:none"
+					fill="${config.sectors.filter(({t}) => t === 'min')[0].col}"
+				/>	
+				<rect id="ag_str_mark_negative_half_{{unique}}" ng-if="${config.differential == true}"  x="${config.center.point/2 + 1}" y="${config.stripe.y - config.lineWidth/4}" 
+					width="1" height="${config.lineWidth/2}"	
+					style="stroke:none"
+					fill="${config.brgColor}"
+				/>	
+				<rect id="ag_str_mark_{{unique}}" ng-if="${config.differential == true}"  x="${initpos}" y="${config.stripe.y - config.lineWidth/2}" 
+					width="1" height="${config.lineWidth}"	
 					style="stroke:none"
 					fill="${config.bgrColor}"				
-				/>				
+				/>
+				<rect id="ag_str_mark_positive_half_{{unique}}" ng-if="${config.differential == true}"  x="${config.center.point*1.5}" y="${config.stripe.y - config.lineWidth/4}" 
+					width="1" height="${config.lineWidth/2}"	
+					style="stroke:none"
+					fill="${config.brgColor}"
+				/>	
+				<rect id="ag_str_mark_max_{{unique}}" ng-if="${config.differential == true}"  x="${config.exactwidth - 1}" y="${config.stripe.y - config.lineWidth/2}" 
+					width="1" height="${config.lineWidth}"	
+					style="stroke:none"
+					fill="${config.sectors.filter(({t}) => t === 'max')[0].col}"
+				/>			
 				<path id="ag_str_line_{{unique}}" style="fill:none"; stroke="${config.color}" stroke-width="${config.lineWidth}" />				
 				<g id="ag_dots_{{unique}}" style="outline: none; border: 0;"></g>				
 			</svg>`
