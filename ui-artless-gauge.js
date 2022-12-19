@@ -190,7 +190,7 @@ module.exports = function (RED) {
 
 	function checkConfig(node, conf) {
 		if (!conf || !conf.hasOwnProperty("group")) {
-			node.error(RED._("ui_artlessgauge.error.no-group"));
+			node.error(RED._("ui_arbr_traveler.error.no-group"));
 			return false;
 		}
 		return true;
@@ -1205,7 +1205,7 @@ module.exports = function (RED) {
 			}
 		});
 	}
-	RED.nodes.registerType("ui_artlessgauge", ArtlessGaugeNode);
+	RED.nodes.registerType("ui_arbr_traveler", ArtlessGaugeNode);
 
 	var uipath = 'ui';
 	if (RED.settings.ui) {
