@@ -526,12 +526,12 @@ module.exports = function (RED) {
 					config.width = parseInt(group.config.width) || 1
 				}
 				if (config.height == 0) {
-					config.height = parseInt(group.config.height) || 1
+					config.height = parseInt(group.config.height) || Math.ceil(((parseInt(config.lineWidth) + 50) / 48))
 				}
 				config.width = parseInt(config.width)
 				config.height = parseInt(config.height)
 				if (config.type == 'linear') {
-					config.height = config.height > 2 ? 2 : config.height
+					config.height = config.height > 4 ? 4 : config.height
 				}
 				if (config.type == 'radial') {
 					var smallest = Math.min(...[config.width, config.height])
