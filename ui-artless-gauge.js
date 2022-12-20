@@ -93,12 +93,12 @@ module.exports = function (RED) {
 				<text ng-if="${config.label != ""}" id="ag_label_{{unique}}" class="ag-txt-{{unique}}" 
 				text-anchor="start" dominant-baseline="baseline" 
 				x="${config.stripe.left}" y="${config.stripe.y - 5 - (config.lineWidth / 2)}">${config.label}</text>
-				<text x="${config.exactwidth - 3}" y="${config.stripe.y - 4 - (config.lineWidth / 2)}">
-					<tspan id="ag_value_{{unique}}" class="ag-txt-{{unique}} big" text-anchor="end" dominant-baseline="baseline">0</tspan>
+				<text ng-if="${config.hideValue == false}" x="${(config.exactwidth / 2) + 18}" y="${config.stripe.y - 4 - (config.lineWidth / 2)}">
+					<tspan id="ag_value_{{unique}}" class="ag-txt-{{unique}} big" text-anchor="end" dominant-baseline="baseline" style="font-weight: bold;">0</tspan>
 					<tspan ng-if="${(config.minmax == true || config.inlineunit == true) && config.unit != ""}" class="ag-txt-{{unique}}" id="ag_alt_3_{{unique}}" text-anchor="end"> </tspan>
 				</text>
 				<g ng-if="${config.differential == true}">
-				<text id="ag_alt_{{unique}}" class="ag-txt-{{unique}} small" x="${config.stripe.left}" y="${config.stripe.y + config.stripe.sdy}"
+				<text ng-if="${config.minmax == true}" id="ag_alt_{{unique}}" class="ag-txt-{{unique}} small" x="${config.stripe.left}" y="${config.stripe.y + config.stripe.sdy}"
 					text-anchor="end" dominant-baseline="baseline">
 					<tspan x="${config.stripe.left}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>
 					<tspan x="${config.center.point/2 - 8}" id="ag_alt_0.5_{{unique}}" text-anchor="start">-5</tspan>		
@@ -126,7 +126,7 @@ module.exports = function (RED) {
 					style="stroke:none"
 					fill="${config.sectors.filter(({t}) => t === 'min')[0].col}"
 				/>	
-				<rect id="ag_str_mark_negative_half_{{unique}}" ng-if="${config.differential == true}"  x="${config.center.point/2 + 1}" y="${config.stripe.y - config.lineWidth/4}" 
+				<rect id="ag_str_mark_negative_half_{{unique}}" ng-if="${config.differential == true && config.minmax == true}"  x="${config.center.point/2 + 1}" y="${config.stripe.y - config.lineWidth/4}" 
 					width="1" height="${config.lineWidth/2}"	
 					style="stroke:none"
 					fill="${config.brgColor}"
@@ -136,7 +136,7 @@ module.exports = function (RED) {
 					style="stroke:none"
 					fill="${config.bgrColor}"				
 				/>
-				<rect id="ag_str_mark_positive_half_{{unique}}" ng-if="${config.differential == true}"  x="${config.center.point*1.5}" y="${config.stripe.y - config.lineWidth/4}" 
+				<rect id="ag_str_mark_positive_half_{{unique}}" ng-if="${config.differential == true && config.minmax == true}"  x="${config.center.point*1.5}" y="${config.stripe.y - config.lineWidth/4}" 
 					width="1" height="${config.lineWidth/2}"	
 					style="stroke:none"
 					fill="${config.brgColor}"

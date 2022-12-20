@@ -87,14 +87,15 @@ SOFTWARE.
             },
             lineWidth: { value: 3 },
             bgcolorFromTheme: { value: true },
-            diffCenter: { value: '', required: false }
+            diffCenter: { value: '', required: false },
+            hideValue: { value: false },
         },
         inputs: 1,
         outputs: 0,
         icon: 'artlessgauge.png',
-        paletteLabel: 'Traveler',
+        paletteLabel: 'ARBR Traveler',
         label: function () {
-            return this.name || 'Traveler';
+            return this.name || 'ARBR Traveler';
         },
         oneditprepare: function () {
             var typedefinitions = {
@@ -156,7 +157,7 @@ SOFTWARE.
                     }
                 }
                 var last = $('#node-input-lineWidth').val()
-                
+
                 if(last == null){
                    last = this.lineWidth || 3
                 }
@@ -255,7 +256,9 @@ SOFTWARE.
                 this.lineWidth = 3;
                 $('#node-input-lineWidth').val('3px');
             }
-
+            if (this.hideValue === undefined) {
+                $("#node-input-hideValue").prop('checked', false);
+            }
             $('#node-input-colorFromTheme').change(function () {
                 if (this.checked == true) {
                     $('#node-input-colorLine').hide();
@@ -555,7 +558,11 @@ SOFTWARE.
         <input type="checkbox" id="node-input-bgcolorFromTheme" checked style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">Use theme color
         <span for='node-input-colorTrack' id='node-input-colorTrackSpan' style='margin-left:20px;'>Custom color</span>
         <input type='color' id='node-input-colorTrack' style='width:80px'/>
-    </div> 
+    </div>
+    <div class='form-row' id='node-input-valuefield'>
+        <label for='node-input-valuefield'><i class='fa fa-eye-slash'></i> Value field</span></label>
+        <input type="checkbox" id="node-input-hideValue" style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">Hide value field        
+    </div>
     <div class='form-row' id='node-input-minmaxshow'>
         <label for='node-input-minmax'><i class='fa fa-gear'></i> Tickmarks</span></label>
         <input type="checkbox" id="node-input-minmax" style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">Show for min and max (and center)    
