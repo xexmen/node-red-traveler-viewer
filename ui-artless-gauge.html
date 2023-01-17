@@ -26,7 +26,7 @@ SOFTWARE.
     var ARTLESS_ERR_UNIQUE = "All values must be unique!"
     var ARTLESS_ERR_SOME_NAN = "Bad sector configuration!"
     var ARTLESS_ERR_SOME_OVER = "Sector out of range!"
-    RED.nodes.registerType('ui_artlessgauge', {
+    RED.nodes.registerType('ui_arbr_traveler', {
         category: 'dashboard',
         color: 'rgb( 63, 173, 181)',
         configError: '',
@@ -94,9 +94,9 @@ SOFTWARE.
         inputs: 1,
         outputs: 0,
         icon: 'artlessgauge.png',
-        paletteLabel: 'ArtlessGauge',
+        paletteLabel: 'ARBR Traveler',
         label: function () {
-            return this.name || 'ArtlessGauge';
+            return this.name || 'ARBR Traveler';
         },
         oneditprepare: function () {
             var typedefinitions = {
@@ -481,7 +481,7 @@ SOFTWARE.
         }
     });
 </script>
-<script type='text/x-red' data-template-name='ui_artlessgauge'>
+<script type='text/x-red' data-template-name='ui_arbr_traveler'>
     <div class='form-row' id='template-row-group'>
         <label for='node-input-group'><i class='fa fa-table'></i> Group</span></label>
         <input type='text' id='node-input-group'>
@@ -598,7 +598,7 @@ SOFTWARE.
         <input type='text' id='node-input-name' placeholder='Name'>
     </div>
 </script>
-<script type='text/x-red' data-help-name='ui_artlessgauge'>
+<script type='text/x-red' data-help-name='ui_arbr_traveler'>
     <p>Artless gauge is gauge with minimal design. Gauge has two layouts - linear and radial. 
         Both layouts support regular mode and differential mode. 
         With differential mode, the indicating colored track is drawn from center to side. 
