@@ -26,7 +26,7 @@ SOFTWARE.
     var ARTLESS_ERR_UNIQUE = "All values must be unique!"
     var ARTLESS_ERR_SOME_NAN = "Bad sector configuration!"
     var ARTLESS_ERR_SOME_OVER = "Sector out of range!"
-    RED.nodes.registerType('ui_arbr_traveler', {
+    RED.nodes.registerType('ui_artlessgauge', {
         category: 'dashboard',
         color: 'rgb( 63, 173, 181)',
         configError: '',
@@ -89,13 +89,14 @@ SOFTWARE.
             bgcolorFromTheme: { value: true },
             diffCenter: { value: '', required: false },
             hideValue: { value: false },
+            verticalMode: { value: false },
         },
         inputs: 1,
         outputs: 0,
         icon: 'artlessgauge.png',
-        paletteLabel: 'ARBR Traveler',
+        paletteLabel: 'ArtlessGauge',
         label: function () {
-            return this.name || 'ARBR Traveler';
+            return this.name || 'ArtlessGauge';
         },
         oneditprepare: function () {
             var typedefinitions = {
@@ -211,6 +212,9 @@ SOFTWARE.
 
             if (this.differential === undefined) {
                 $("#node-input-differential").prop('checked', false);
+            }
+            if (this.verticalMode === undefined) {
+                $("#node-input-verticalMode").prop('checked', false);
             }
             $('#node-input-layout').change(function(){
                 if($('#node-input-layout option:selected').text() == 'Linear'){
@@ -477,7 +481,7 @@ SOFTWARE.
         }
     });
 </script>
-<script type='text/x-red' data-template-name='ui_arbr_traveler'>
+<script type='text/x-red' data-template-name='ui_artlessgauge'>
     <div class='form-row' id='template-row-group'>
         <label for='node-input-group'><i class='fa fa-table'></i> Group</span></label>
         <input type='text' id='node-input-group'>
@@ -507,6 +511,10 @@ SOFTWARE.
             <option value='linear'>Linear</option>
             <option value='radial'>Radial</option>           
         </select>
+    </div>
+    <div class='form-row' id='node-input-vertical'>
+        <label for='node-input-verticalMode'><i class='icon-tag'></i> Vertical Mode</label>
+        <input type='checkbox' id='node-input-verticalMode' placeholder='fa-fire' style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">
     </div> 
     <div class='form-row' id='node-input-diffmode'>
         <label for='node-input-differential'><i class='fa fa-gear'></i> Mode</span></label>
@@ -590,7 +598,7 @@ SOFTWARE.
         <input type='text' id='node-input-name' placeholder='Name'>
     </div>
 </script>
-<script type='text/x-red' data-help-name='ui_arbr_traveler'>
+<script type='text/x-red' data-help-name='ui_artlessgauge'>
     <p>Artless gauge is gauge with minimal design. Gauge has two layouts - linear and radial. 
         Both layouts support regular mode and differential mode. 
         With differential mode, the indicating colored track is drawn from center to side. 
