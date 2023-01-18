@@ -84,7 +84,7 @@ module.exports = function (RED) {
 				margin-left: auto;
 				left: 0px;
 				right: 0px;
-			}									
+			}								
 		</style>`
 		var initpos = config.differential == true ? config.center.point : config.stripe.left
 
@@ -100,11 +100,11 @@ module.exports = function (RED) {
 				<g ng-if="${config.differential == true}">
 				<text ng-if="${config.minmax == true}" id="ag_alt_{{unique}}" class="ag-txt-{{unique}} small" x="${config.stripe.left}" y="${config.stripe.y + config.stripe.sdy}"
 					text-anchor="end" dominant-baseline="baseline">
-					<tspan x="${config.stripe.left}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>
-					<tspan x="${config.center.point/2 - 8}" id="ag_alt_0.5_{{unique}}" text-anchor="start">-5</tspan>		
-					<tspan x="${config.center.point + 1.5}" id="ag_alt_1_{{unique}}" text-anchor="middle"></tspan>
-					<tspan x="${config.center.point*1.5 - 10}" id="ag_alt_1.5_{{unique}}" text-anchor="start">+5</tspan>
-					<tspan x="${config.exactwidth - 3}" id="ag_alt_2_{{unique}}" text-anchor="end"></tspan>					
+					<tspan x="${config.verticalMode ? 0 : config.stripe.left}" y="${config.verticalMode ? config.stripe.left + 10 : config.exactHeight}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>
+					<tspan x="${config.verticalMode ? 0 : config.center.point/2 - 8}" y="${config.verticalMode ? config.center.point/2 : config.exactHeight}" id="ag_alt_0.5_{{unique}}" text-anchor="start">-5</tspan>		
+					<tspan x="${config.verticalMode ? 0 : config.center.point}" y="${config.verticalMode ? config.center.point + 1.5 : config.exactHeight}" id="ag_alt_1_{{unique}}" text-anchor="start"></tspan>
+					<tspan x="${config.verticalMode ? 0 : config.center.point*1.5 - 10}" y="${config.verticalMode ? config.center.point*1.5 : config.exactHeight}" id="ag_alt_1.5_{{unique}}" text-anchor="start">+5</tspan>
+					<tspan x="${config.verticalMode ? 0 : config.exactwidth - 16}" y="${config.verticalMode ? config.exactwidth - 3 : config.exactHeight}" id="ag_alt_2_{{unique}}" text-anchor="start"></tspan>					
 				</text>
 				</g>
 				<g ng-if="${config.differential == false}">
@@ -116,33 +116,38 @@ module.exports = function (RED) {
 				</text>
 				</g>
 				
-				<rect id="ag_str_bg_{{unique}}" x="${config.stripe.left}" y="${config.stripe.y}" 
-					width="${config.stripe.width}" height="1"	
+				<rect id="ag_str_bg_{{unique}}" x="${config.verticalMode ? config.stripe.y : config.stripe.left}" y="${config.verticalMode ? config.stripe.left : config.stripe.y}" 
+					width="${config.verticalMode ? 1 : config.stripe.width}" height="${config.verticalMode ? config.stripe.width : 1}"	
 					style="stroke:none";
 					fill="${config.bgrColor}"					
 				/>
-				<rect id="ag_str_mark_min_{{unique}}" ng-if="${config.differential == true}"  x="${config.stripe.left}" y="${config.stripe.y - config.lineWidth/2}" 
-					width="1" height="${config.lineWidth}"	
+				<rect id="ag_str_mark_min_{{unique}}" ng-if="${config.differential == true}"  x="${config.verticalMode ? (config.stripe.y - config.lineWidth/2) : config.stripe.left}" y="${config.verticalMode ? config.stripe.left : (config.stripe.y - config.lineWidth/2)}" 
+					width="${config.verticalMode ? config.lineWidth : 1}" height="${config.verticalMode ? 1 : config.lineWidth}"	
 					style="stroke:none"
 					fill="${config.sectors.filter(({t}) => t === 'min')[0].col}"
 				/>	
-				<rect id="ag_str_mark_negative_half_{{unique}}" ng-if="${config.differential == true && config.minmax == true}"  x="${config.center.point/2 + 1}" y="${config.stripe.y - config.lineWidth/4}" 
-					width="1" height="${config.lineWidth/2}"	
+				<rect id="ag_str_mark_negative_half_{{unique}}" ng-if="${config.differential == true && config.minmax == true}"  x="${config.verticalMode ? (config.stripe.y - config.lineWidth/4) : (config.center.point/2 + 1)}" y="${config.verticalMode ? (config.center.point/2 + 1) : (config.stripe.y - config.lineWidth/4)}" 
+					width="${config.verticalMode ? config.lineWidth/2 : 1}" height="${config.verticalMode ? 1 : config.lineWidth/2}"
 					style="stroke:none"
 					fill="${config.brgColor}"
-				/>	
-				<rect id="ag_str_mark_{{unique}}" ng-if="${config.differential == true}"  x="${initpos}" y="${config.stripe.y - config.lineWidth/2}" 
+				/>
+				<rect id="ag_str_mark_{{unique}}" ng-if="${config.differential == true && config.verticalMode === false}"  x="${initpos}" y="${config.stripe.y - config.lineWidth/2}" 
 					width="1" height="${config.lineWidth}"	
 					style="stroke:none"
 					fill="${config.bgrColor}"				
 				/>
-				<rect id="ag_str_mark_positive_half_{{unique}}" ng-if="${config.differential == true && config.minmax == true}"  x="${config.center.point*1.5}" y="${config.stripe.y - config.lineWidth/4}" 
-					width="1" height="${config.lineWidth/2}"	
+				<rect id="ag_str_mark_{{unique}}" ng-if="${config.differential == true && config.verticalMode === true}"  y="${initpos - 1}" x="${config.stripe.y - config.lineWidth/2}" 
+					height="1" width="${config.lineWidth}"	
+					style="stroke:none"
+					fill="${config.bgrColor}"				
+				/>
+				<rect id="ag_str_mark_positive_half_{{unique}}" ng-if="${config.differential == true && config.minmax == true}"  x="${config.verticalMode ? (config.stripe.y - config.lineWidth/4) : config.center.point*1.5}" y="${config.verticalMode ? (config.center.point*1.5) : (config.stripe.y - config.lineWidth/4)}" 
+					width="${config.verticalMode ? config.lineWidth/2 : 1}" height="${config.verticalMode ? 1 : config.lineWidth/2}"	
 					style="stroke:none"
 					fill="${config.brgColor}"
 				/>	
-				<rect id="ag_str_mark_max_{{unique}}" ng-if="${config.differential == true}"  x="${config.exactwidth - 1}" y="${config.stripe.y - config.lineWidth/2}" 
-					width="1" height="${config.lineWidth}"	
+				<rect id="ag_str_mark_max_{{unique}}" ng-if="${config.differential == true}"  x="${config.verticalMode ? (config.stripe.y - config.lineWidth/2) : config.exactwidth - 1}" y="${config.verticalMode ? (config.exactwidth - 1) : (config.stripe.y - config.lineWidth/2)}" 
+					width="${config.verticalMode ? config.lineWidth : 1}" height="${config.verticalMode ? 1 : config.lineWidth}"
 					style="stroke:none"
 					fill="${config.sectors.filter(({t}) => t === 'max')[0].col}"
 				/>			
@@ -576,7 +581,8 @@ module.exports = function (RED) {
 				config.iconcont = Math.floor((config.exactheight / config.height) + (config.height * 8))
 				var le = config.icon == "" ? 0 : config.iconcont
 				var wi = config.icon == "" ? config.exactwidth : config.exactwidth - config.iconcont
-
+				var widgetWidth = config.verticalMode ? config.height : config.width
+				var widgetHeight = config.verticalMode ? config.width : config.height
 				config.stripe = {
 					left: le,
 					y: site.sizes.sy * config.height * .52,
@@ -645,8 +651,8 @@ module.exports = function (RED) {
 					node: node,
 					order: config.order,
 					group: config.group,
-					width: config.width,
-					height: config.height,
+					width: widgetWidth,
+					height: widgetHeight,
 					format: html,
 					templateScope: "local",
 					emitOnlyNewValues: false,
@@ -690,6 +696,7 @@ module.exports = function (RED) {
 						$scope.line = null
 						$scope.stripey = 0
 						$scope.animate = false
+						// $scope.verticalMode = false
 
 						$scope.init = function (p) {							
 							if(p.config && p.config.animate){
@@ -715,6 +722,7 @@ module.exports = function (RED) {
 								$scope.lineWidth = data.config.lineWidth
 								$scope.sizecoef = data.config.sizecoef
 								$scope.type = data.config.type
+								$scope.verticalMode = data.config.verticalMode
 								if (data.config.differential == true) {
 									$scope.diffpoint = data.config.center.value
 								}
@@ -833,11 +841,15 @@ module.exports = function (RED) {
 						var adjustCenter = function (c) {
 							var el = document.getElementById("ag_alt_1_" + $scope.unique)
 							if (el) {
-								el.setAttribute('x', c + 1.5)
+								if(!$scope.verticalMode) {
+									el.setAttribute('x', c + 1.5)
+								}
 							}
 							el = document.getElementById("ag_str_mark_" + $scope.unique)
 							if (el) {
-								el.setAttribute('x', c)
+								if(!$scope.verticalMode) {
+									el.setAttribute('x', c - 1)
+								}
 							}
 						}
 
@@ -1080,7 +1092,12 @@ module.exports = function (RED) {
 							}
 							var el = document.getElementById("ag_str_line_" + $scope.unique)
 							if (el) {
-								var d = ["M", p.x, $scope.stripey, "L", p.w, $scope.stripey].join(" ")
+								if($scope.verticalMode) {
+									var d = ["M", $scope.stripey, p.w, "L", $scope.stripey, p.x].join(" ")
+								} else {
+									var d = ["M", p.w, $scope.stripey, "L", p.x, $scope.stripey].join(" ")
+								}
+								
 
 								el.setAttribute("d", d);
 							}

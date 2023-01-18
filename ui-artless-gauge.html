@@ -89,6 +89,7 @@ SOFTWARE.
             bgcolorFromTheme: { value: true },
             diffCenter: { value: '', required: false },
             hideValue: { value: false },
+            verticalMode: { value: false },
         },
         inputs: 1,
         outputs: 0,
@@ -211,6 +212,9 @@ SOFTWARE.
 
             if (this.differential === undefined) {
                 $("#node-input-differential").prop('checked', false);
+            }
+            if (this.verticalMode === undefined) {
+                $("#node-input-verticalMode").prop('checked', false);
             }
             $('#node-input-layout').change(function(){
                 if($('#node-input-layout option:selected').text() == 'Linear'){
@@ -507,6 +511,10 @@ SOFTWARE.
             <option value='linear'>Linear</option>
             <option value='radial'>Radial</option>           
         </select>
+    </div>
+    <div class='form-row' id='node-input-vertical'>
+        <label for='node-input-verticalMode'><i class='icon-tag'></i> Vertical Mode</label>
+        <input type='checkbox' id='node-input-verticalMode' placeholder='fa-fire' style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">
     </div> 
     <div class='form-row' id='node-input-diffmode'>
         <label for='node-input-differential'><i class='fa fa-gear'></i> Mode</span></label>
