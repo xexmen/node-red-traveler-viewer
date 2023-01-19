@@ -90,6 +90,7 @@ SOFTWARE.
             diffCenter: { value: '', required: false },
             hideValue: { value: false },
             verticalMode: { value: false },
+            reverseMinMax: { value: false },
         },
         inputs: 1,
         outputs: 0,
@@ -215,6 +216,9 @@ SOFTWARE.
             }
             if (this.verticalMode === undefined) {
                 $("#node-input-verticalMode").prop('checked', false);
+            }
+            if (this.reverseMinMax === undefined) {
+                $("#node-input-reverseMinMax").prop('checked', false);
             }
             $('#node-input-layout').change(function(){
                 if($('#node-input-layout option:selected').text() == 'Linear'){
@@ -513,8 +517,12 @@ SOFTWARE.
         </select>
     </div>
     <div class='form-row' id='node-input-vertical'>
-        <label for='node-input-verticalMode'><i class='icon-tag'></i> Vertical Mode</label>
+        <label for='node-input-verticalMode'><i class='fa fa-arrow-up'></i> Vertical Mode</label>
         <input type='checkbox' id='node-input-verticalMode' placeholder='fa-fire' style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">
+    </div>
+    <div class='form-row' id='node-input-reverse'>
+        <label for='node-input-reverseMinMax'><i class='fa fa-refresh'></i> Reverse Min/Max </label>
+        <input type='checkbox' id='node-input-reverseMinMax' placeholder='Reverse Min Max' style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">
     </div> 
     <div class='form-row' id='node-input-diffmode'>
         <label for='node-input-differential'><i class='fa fa-gear'></i> Mode</span></label>
