@@ -400,7 +400,7 @@ module.exports = function (RED) {
 								minin: config.min,
 								maxin: config.max,
 								minout: config.stripe.left,
-								maxout: config.exactwidth
+								maxout: config.verticalMode ? config.exactheight : config.exactwidth
 							}
 							var centerpoint = range(config.center.value, dp, 'clamp', true, 4)
 
