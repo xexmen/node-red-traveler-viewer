@@ -87,30 +87,22 @@ module.exports = function (RED) {
 			}								
 		</style>`
 		var initpos = config.differential == true ? config.center.point : config.stripe.left
-
 		var linear = String.raw`				
 			<svg id="ag_svg_{{unique}}" preserveAspectRatio="xMidYMid meet" width="${config.exactwidth}" height="${config.exactheight}" cursor="default" pointer-events="none" ng-init='init(${cojo})' xmlns="http://www.w3.org/2000/svg" >				
 				<text ng-if="${config.label != ""}" id="ag_label_{{unique}}" class="ag-txt-{{unique}}" 
 				text-anchor="start" dominant-baseline="baseline" 
 				x="${config.stripe.left}" y="${config.stripe.y - 5 - (config.lineWidth / 2)}">${config.label}</text>
-				<g ng-if="${config.differential == true}">
+				<g>
 				<text ng-if="${config.minmax == true}" id="ag_alt_{{unique}}" class="ag-txt-{{unique}} small" x="${config.stripe.left}" y="${config.stripe.y + config.stripe.sdy}"
 					text-anchor="end" dominant-baseline="baseline">
-					<tspan x="${config.verticalMode ? -20 : config.stripe.left}" y="${config.verticalMode ? 10 : config.exactheight + 12}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>
-					<tspan x="${config.verticalMode ? -20 : config.center.point/2 - 8}" y="${config.verticalMode ? config.exactheight/4 : config.exactheight + 12}" id="ag_alt_1_{{unique}}" text-anchor="start"></tspan>		
-					<tspan x="${config.verticalMode ? -20 : config.center.point}" y="${config.verticalMode ? config.exactheight/2 : config.exactheight + 12}" id="ag_alt_2_{{unique}}" text-anchor="start"></tspan>
-					<tspan x="${config.verticalMode ? -20 : config.center.point*1.5 - 5}" y="${config.verticalMode ? config.exactheight*3/4 : config.exactheight + 12}" id="ag_alt_3_{{unique}}" text-anchor="start"></tspan>
-					<tspan x="${config.verticalMode ? -20 : config.exactwidth - 20}" y="${config.verticalMode ? config.exactheight - 3 : config.exactheight + 12}" id="ag_alt_4_{{unique}}" text-anchor="start"></tspan>
+					<tspan x="${config.verticalMode ? -20 : config.stripe.left}" y="${config.verticalMode ? 10 : config.exactheight - 12}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>
+					<tspan x="${config.verticalMode ? -20 : config.exactwidth/4 - 8}" y="${config.verticalMode ? config.exactheight/4 : config.exactheight - 12}" id="ag_alt_1_{{unique}}" text-anchor="start"></tspan>		
+					<tspan x="${config.verticalMode ? -20 : config.exactwidth/2}" y="${config.verticalMode ? config.exactheight/2 : config.exactheight - 12}" id="ag_alt_2_{{unique}}" text-anchor="start"></tspan>
+					<tspan x="${config.verticalMode ? -20 : config.exactwidth*3/4 - 5}" y="${config.verticalMode ? config.exactheight*3/4 : config.exactheight - 12}" id="ag_alt_3_{{unique}}" text-anchor="start"></tspan>
+					<tspan x="${config.verticalMode ? -20 : config.exactwidth - 20}" y="${config.verticalMode ? config.exactheight - 3 : config.exactheight - 12}" id="ag_alt_4_{{unique}}" text-anchor="start"></tspan>
 				</text>
 				</g>
-				<g ng-if="${config.differential == false}">
-				<text id="ag_alt_{{unique}}" class="ag-txt-{{unique}} small" x="${config.stripe.left}" y="${config.stripe.y + config.stripe.sdy}"
-					text-anchor="end" dominant-baseline="baseline">
-					<tspan x="${config.stripe.left}" id="ag_alt_0_{{unique}}" text-anchor="start"></tspan>
-					<tspan x="${config.stripe.left + 1.5 + (config.stripe.width / 2)}" id="ag_alt_1_{{unique}}" text-anchor="middle"></tspan>					
-					<tspan x="${config.exactwidth - 3}" id="ag_alt_2_{{unique}}" text-anchor="end"></tspan>					
-				</text>
-				</g>
+			
 				
 				<rect id="ag_str_bg_{{unique}}" x="${config.verticalMode ? config.exactwidth/2 : config.stripe.left}" y="${config.verticalMode ? config.stripe.left : config.exactheight/2}" 
 					width="${config.verticalMode ? 1 : config.exactwidth}" height="${config.verticalMode ? config.exactheight : 1}"	
@@ -723,6 +715,8 @@ module.exports = function (RED) {
 								$scope.type = data.config.type
 								$scope.verticalMode = data.config.verticalMode
 								$scope.reverseMinMax = data.config.reverseMinMax
+								$scope.differential = data.config.differential
+								$scope.reverseStartPos = data.config.reverseStartPos
 								$scope.config = data.config
 								if (data.config.differential == true) {
 									$scope.diffpoint = data.config.center.value
@@ -747,11 +741,12 @@ module.exports = function (RED) {
 									if (data.config.type == "linear" && data.config.unit != "") {
 										euv = data.config.unit
 									}
+									cv = (data.config.min + data.config.max) / 2
 									if (data.config.differential == true) {
 										cv = (data.config.center.value)
 									}
-									var negativeHalf = data.config.min / 2;
-									var positiveHalf = data.config.max / 2;
+									var negativeHalf = (data.config.min + cv) / 2;
+									var positiveHalf = (data.config.max + cv) / 2;
 									u = data.config.reverseMinMax 
 										? [data.config.max, positiveHalf, cv, negativeHalf, data.config.min] 
 										: [data.config.min, negativeHalf, cv, positiveHalf, data.config.max]
@@ -1107,9 +1102,20 @@ module.exports = function (RED) {
 								if($scope.verticalMode) {
 									var d = ["M", $scope.config.exactwidth/2, p.w, "L", $scope.config.exactwidth/2, p.x].join(" ")
 								} else {
-									var d = ["M", p.w, $scope.config.exactheight/2, "L", p.x, $scope.config.exactheight/2].join(" ")
+									if($scope.differential) {
+										if($scope.reverseMinMax) {
+											var d = ["M", p.w, $scope.config.exactheight/2, "L", p.x, $scope.config.exactheight/2].join(" ")
+										} else {
+											var d = ["M", $scope.reverseStartPos ? $scope.config.exactwidth + p.w : p.w, $scope.config.exactheight/2, "L", $scope.reverseStartPos ? $scope.config.exactwidth : p.x, $scope.config.exactheight/2].join(" ")
+										}
+									} else {
+										if($scope.reverseMinMax) {
+											var d = ["M", $scope.config.exactwidth + p.w, $scope.config.exactheight/2, "L", $scope.reverseStartPos ? $scope.config.exactwidth : p.x, $scope.config.exactheight/2].join(" ")
+										} else {
+											var d = ["M", p.w, $scope.config.exactheight/2, "L", $scope.reverseStartPos ? $scope.config.exactwidth : p.x, $scope.config.exactheight/2].join(" ")
+										}
+									}
 								}
-								
 
 								el.setAttribute("d", d);
 							}
