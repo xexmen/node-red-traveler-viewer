@@ -91,6 +91,7 @@ SOFTWARE.
             hideValue: { value: false },
             verticalMode: { value: false },
             reverseMinMax: { value: false },
+            reverseStartPos: { value: false},
         },
         inputs: 1,
         outputs: 0,
@@ -220,6 +221,9 @@ SOFTWARE.
             if (this.reverseMinMax === undefined) {
                 $("#node-input-reverseMinMax").prop('checked', false);
             }
+            if (this.reverseStartPos === undefined) {
+                $("#node-input-reverseStartPos").prop('checked', false);
+            }
             $('#node-input-layout').change(function(){
                 if($('#node-input-layout option:selected').text() == 'Linear'){
                     $('#secondary-container').hide();
@@ -245,9 +249,11 @@ SOFTWARE.
                 if (this.checked == false) {
                     $('#node-input-diffCenter').hide();
                     $('#node-input-diffCenterSpan').hide();
+                    $('#node-input-reverseStart').show();
                 } else {
                     $('#node-input-diffCenter').show();
                     $('#node-input-diffCenterSpan').show();
+                    $('#node-input-reverseStart').hide();
                 }
             });
 
@@ -523,6 +529,10 @@ SOFTWARE.
     <div class='form-row' id='node-input-reverse'>
         <label for='node-input-reverseMinMax'><i class='fa fa-refresh'></i> Reverse Min/Max </label>
         <input type='checkbox' id='node-input-reverseMinMax' placeholder='Reverse Min Max' style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">
+    </div>
+    <div class='form-row' id='node-input-reverseStart'>
+        <label for='node-input-reverseStartPos'><i class='fa fa-refresh'></i> Reverse Start Position </label>
+        <input type='checkbox' id='node-input-reverseStartPos' placeholder='Reverse Start Pos' style="display:inline-block; width:auto; vertical-align:baseline; margin-right:5px;">
     </div> 
     <div class='form-row' id='node-input-diffmode'>
         <label for='node-input-differential'><i class='fa fa-gear'></i> Mode</span></label>
