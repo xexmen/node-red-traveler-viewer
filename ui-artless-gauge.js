@@ -140,11 +140,11 @@ module.exports = function (RED) {
 					fill="${config.sectors.filter(({t}) => t === (config.reverseMinMax ? 'min' : 'max'))[0].col}"
 				/>
 				<path id="ag_str_line_{{unique}}" style="fill:none"; stroke="${config.color}" stroke-width="${config.verticalMode ? config.exactwidth : config.exactheight}" />				
+				<g id="ag_dots_{{unique}}" style="outline: none; border: 0;"></g>				
 				<text ng-if="${config.hideValue == false}" x="${(config.exactwidth / 2) + 18}" y="${config.stripe.y - 4 - (config.lineWidth / 2)}">
 					<tspan id="ag_value_{{unique}}" class="ag-txt-{{unique}} big" text-anchor="end" dominant-baseline="baseline" style="font-weight: bold;">0</tspan>
 					<tspan ng-if="${(config.minmax == true || config.inlineunit == true) && config.unit != ""}" class="ag-txt-{{unique}}" id="ag_alt_5_{{unique}}" text-anchor="end"> </tspan>
 				</text>
-				<g id="ag_dots_{{unique}}" style="outline: none; border: 0;"></g>				
 			</svg>`
 
 		var radial = String.raw`				
@@ -770,7 +770,7 @@ module.exports = function (RED) {
 										adjustCenter(data.config.center.point)
 									}
 								}
-								updateSegmentDots(data.config.sectors)
+								updateSegmentDots(data.config.sectors, data.config)
 								var adjust = { font: parseFloat(data.config.font.icon) }
 								updateIcon(data.config.icontype, data.config.icon, adjust)
 							}
@@ -876,7 +876,7 @@ module.exports = function (RED) {
 								el.setAttribute('text-anchor', a)
 							}
 						}
-						var updateSegmentDots = function (sectors) {
+						var updateSegmentDots = function (sectors, config) {
 							var cont = document.getElementById("ag_dots_" + $scope.unique);
 							if (!cont) {
 								return
@@ -913,19 +913,23 @@ module.exports = function (RED) {
 								if (!data.dot || data.dot == 0) {
 									return
 								}
-								var p = ((data.val - min) * 100) / (max - min)
+								var p = !config.reverseMinMax ? ((data.val - min) * 100) / (max - min) : ((max - data.val) * 100) / (max - min) 
 								var pr = (p * pathWidth) / 100
-								var pt = line.getPointAtLength(pr);
+								var pt = !config.verticalMode ? line.getPointAtLength(pr) : { x: 0, y: (config.exactheight*pr)};
 								if (data.t == "min") {
 									pt.x += data.dot
 								}
 								if (data.t == 'max') {
 									pt.x -= data.dot
 								}
-								var circle = document.createElementNS(svgns, 'circle');
-								circle.setAttributeNS(null, 'cx', pt.x);
-								circle.setAttributeNS(null, 'cy', pt.y);
-								circle.setAttributeNS(null, 'r', data.dot);
+								var circle = document.createElementNS(svgns, 'rect');
+								circle.setAttributeNS(null, 'width', !config.verticalMode ? data.dot : config.exactwidth);
+								circle.setAttributeNS(null, 'height', !config.verticalMode ? pt.y*2 : data.dot);
+								circle.setAttributeNS(null, 'x', !config.verticalMode ? pt.x : 0);
+								circle.setAttributeNS(null, 'y', !config.verticalMode ? 0 : pt.y);
+								circle.setAttributeNS(null, 'stroke', 'black');
+								circle.setAttributeNS(null, 'stroke-width', '1');
+								circle.setAttributeNS(null, 'stroke-dasharray', '1px');
 								var col = data.col
 								if ($scope.diffpoint != null && data.val < $scope.diffpoint && idx > 0) {
 									col = all[idx - 1].col
